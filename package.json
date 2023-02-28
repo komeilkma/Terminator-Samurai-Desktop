@@ -1,0 +1,19 @@
+{
+  "name": "terminator-samurai-desktop",
+  "version": "1.0.0",
+  "description": "GUI Windows/Linux/macOS Client for Terminator Samurai VPN Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/komeilkma/Terminator-Samurai-Desktop.git"
+  },
+  "author": "Komeil Majidi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/komeilkma/Terminator-Samurai-Desktop/issues"
+  },
+  "homepage": "https://github.com/komeilkma/Terminator-Samurai-Desktop#readme"
+}
