@@ -1,6 +1,6 @@
 const { app, BrowserWindow } = require('electron');
-const { exec } = require('child_process');
-const path = require('path');
+const { spawn } = require('child_process');
+const os = require('os');
 
 let mainWindow;
 
@@ -15,35 +15,52 @@ function createWindow() {
 
   mainWindow.loadFile('index.html');
 
-  mainWindow.on('closed', function () {
+  mainWindow.on('closed', function() {
     mainWindow = null;
   });
 }
 
 app.on('ready', createWindow);
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', function() {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on('activate', function () {
+app.on('activate', function() {
   if (mainWindow === null) {
     createWindow();
   }
 });
 
 function executeCommand(command) {
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      mainWindow.webContents.send('command-output', error.message);
-    } else if (stderr) {
-      mainWindow.webContents.send('command-output', stderr);
-    } else {
-      mainWindow.webContents.send('command-output', stdout);
-    }
+  let cmd;
+  let args;
+
+  if (os.platform() === 'win32') {
+    cmd = 'cmd.exe';
+    args = ['/c', command];
+  } else {
+    cmd = 'sh';
+    args = ['-c', command];
+  }
+
+  const child = spawn(cmd, args);
+
+  child.stdout.on('data', data => {
+    console.log(`stdout: ${data}`);
+  });
+
+  child.stderr.on('data', data => {
+    console.error(`stderr: ${data}`);
+  });
+
+  child.on('close', code => {
+    console.log(`child process exited with code ${code}`);
   });
 }
 
-exports.executeCommand = executeCommand;
+module.exports = {
+  executeCommand
+};
